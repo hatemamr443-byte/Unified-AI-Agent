@@ -1,5 +1,6 @@
 import json
 import os
+import shutil
 import sys
 
 from unified_agent.acp import ACPProcessWorker, HermesACPWorker
@@ -64,10 +65,11 @@ def test_hermes_worker_uses_expected_entrypoint():
 
 def test_real_hermes_acp_smoke_opt_in(monkeypatch):
     if os.getenv("RUN_HERMES_ACP_SMOKE") != "1":
-        return
-    import shutil
+        import pytest
+        pytest.skip("Set RUN_HERMES_ACP_SMOKE=1 to run the real Hermes smoke test")
     if shutil.which("hermes") is None:
-        return
+        import pytest
+        pytest.skip("Hermes executable is not installed")
     worker = HermesACPWorker(timeout_seconds=60)
     task = Task(task_id="hermes-smoke", goal="Reply with exactly: ACP_OK", requested_capabilities=["research"])
     result = worker.execute(task, "research")
