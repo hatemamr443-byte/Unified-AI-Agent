@@ -1,0 +1,13 @@
+from typing import Any, Protocol
+
+from .models import Task
+
+
+class Worker(Protocol):
+    id: str
+    capabilities: list[str]
+
+    def execute(self, task: Task, capability_id: str) -> Any: ...
+    def cancel(self, task_id: str) -> None: ...
+    def status(self, task_id: str) -> str: ...
+    def resume(self, task: Task) -> Any: ...
