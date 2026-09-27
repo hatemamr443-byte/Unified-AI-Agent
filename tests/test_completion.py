@@ -111,12 +111,12 @@ def test_provider_fallback_reaches_second_provider():
 
 def test_durable_state_round_trip(tmp_path: Path):
     store = JsonFileStateStore(tmp_path)
-    task = Task(task_id="state-1", goal="persist", constraints={"x": 1})
+    task = Task(task_id="state-1", goal="persist", constraints={"required_keys": ["answer"]})
     store.save_task(task)
     loaded = store.load_task("state-1")
     assert loaded is not None
     assert loaded.goal == "persist"
-    assert loaded.constraints == {"x": 1}
+    assert loaded.constraints == {"required_keys": ["answer"]}
 
     capability = Capability(id="test.verify", name="Verify", category="test", description="verification")
     result = make_engine(capability, ValidProvider(), state_store=store).execute(task, "test.verify")
