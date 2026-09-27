@@ -6,6 +6,9 @@ from typing import Any
 class TaskStatus(str, Enum):
     PENDING = "pending"
     RUNNING = "running"
+    WAITING = "waiting"
+    BLOCKED = "blocked"
+    RETRYING = "retrying"
     COMPLETED = "completed"
     FAILED = "failed"
     CANCELLED = "cancelled"

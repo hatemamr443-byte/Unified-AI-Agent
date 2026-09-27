@@ -115,6 +115,8 @@ def test_tool_budget_is_enforced():
 
 
 def test_confirmation_stops_execution():
+    provider = SuccessProvider()
+    provider.capabilities = ["test.confirm"]
     engine = make_engine(
         Capability(
             id="test.confirm",
@@ -123,13 +125,11 @@ def test_confirmation_stops_execution():
             description="needs confirmation",
             requires_confirmation=True,
         ),
-        SuccessProvider(),
+        provider,
     )
     result = engine.execute(Task(task_id="confirm-1", goal="confirm"), "test.confirm")
     assert result.status == ExecutionStatus.REQUIRES_CONFIRMATION
     assert result.requires_human_review is True
-
-
 def test_high_risk_stops_execution():
     engine = make_engine(
         Capability(id="test.execute", name="Execute", category="test", description="success", availability="available"),
