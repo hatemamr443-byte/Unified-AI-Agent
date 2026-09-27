@@ -4,6 +4,7 @@ import json
 import os
 import queue
 import signal
+import shutil
 import subprocess
 import threading
 import time
@@ -50,12 +51,17 @@ class ACPProcessWorker:
         self._states: dict[str, str] = {}
 
     def is_available(self) -> bool:
-        return True
+        executable = self.command[0]
+        if os.path.dirname(executable):
+            return os.path.isfile(executable) and os.access(executable, os.X_OK)
+        return shutil.which(executable) is not None
 
     def execute(self, task: Task, capability_id: str, context: Any = None) -> dict[str, Any]:
         if capability_id not in self.capabilities:
             raise ACPWorkerError(f"Worker does not support capability: {capability_id}")
         self._states[task.task_id] = "running"
+        self._last_text_parts = []
+        self._last_thought_parts = []
         proc: _ACPProcess | None = None
         try:
             proc = self._start_process(task)
