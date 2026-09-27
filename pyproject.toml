@@ -10,7 +10,6 @@ requires-python = ">=3.11"
 
 [project.optional-dependencies]
 test = ["pytest>=8,<9"]
-acp = []
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
