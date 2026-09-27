@@ -126,8 +126,19 @@ def test_durable_state_round_trip(tmp_path: Path):
     assert json.loads((tmp_path / "result-state-1.json").read_text())["status"] == "success"
 
 
+class NoEvidenceProvider:
+    id = "no-evidence"
+    capabilities = ["test.no_evidence"]
+
+    def is_available(self):
+        return True
+
+    def execute(self, task, capability):
+        return {"answer": "ok"}
+
+
 def test_requires_evidence_without_evidence_fails():
-    capability = Capability(id="test.verify", name="Verify", category="test", description="verification")
+    capability = Capability(id="test.no_evidence", name="No Evidence", category="test", description="verification")
     task = Task(task_id="v4", goal="evidence", constraints={"requires_evidence": True})
-    result = make_engine(capability, ValidProvider()).execute(task, "test.verify")
+    result = make_engine(capability, NoEvidenceProvider()).execute(task, "test.no_evidence")
     assert result.status.value == "verification_failed"
