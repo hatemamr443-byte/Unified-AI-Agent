@@ -8,6 +8,9 @@ version = "0.1.0"
 description = "Unified AI Agent control plane foundation"
 requires-python = ">=3.11"
 
+[project.optional-dependencies]
+test = ["pytest>=8,<9"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
